@@ -2,16 +2,17 @@
 const bodyParser = require('body-parser');
 const express = require("express");
 const morgan = require('morgan');
-const db = require("./models");
 const cors = require('cors');
+
+//importing Database and intializing
+const db = require("./models");
 
 // Creating an instance of the Express application
 const app = express();
 
-// const { Appointments, AppointmentServices } = require("./associations/appointmentAssociations")
-
 // Importing route modules
-
+const authRoutes = require('./routes/auth/');
+const managerRoutes = require('./routes/managers/');
 
 // Middleware setup
 app.use(morgan('tiny')); // Logging middleware for request details
@@ -26,15 +27,12 @@ app.use(express.json()); // JSON parsing middleware
 db.sequelize.sync();
 
 // Setting up basic route for root endpoint
-app.get("/", (req, res) => {
-  res.json('Algorim Server');
-});
+app.get("/", (req, res) => {res.json('Algorim Server');});
 
 // Setting up modular routes for different features
-
+app.use("/auth", authRoutes);
+app.use("/manager", managerRoutes);
 
 // Configuring the server to listen on a specific port
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT, () => {console.log(`App listening on port ${PORT}`);});
