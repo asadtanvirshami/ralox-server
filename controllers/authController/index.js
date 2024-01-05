@@ -21,9 +21,12 @@ exports.login = async (req, res) => {
       if (userInfo.email == email && userInfo.password) {
         const payload = {
           // Payload to send and cache on the client-side
+          fname:`${userInfo.fname}`,
+          lname:` ${userInfo.lname}`,
           username: `${userInfo.fname} ${userInfo.lname}`,
           loginId: `${userInfo.id}`,
           email: userInfo.email,
+          isAuthorized:true
         };
         jwt.sign(
           // JWT token with expiration time and payload
