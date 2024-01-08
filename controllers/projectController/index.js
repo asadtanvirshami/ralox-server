@@ -1,6 +1,10 @@
 const Sequelize = require("sequelize");
 const db = require("../../models");
-const { Projects } = require("../../associations/ProjectAssociations");
+const {
+  Projects,
+  ProjectDetails,
+  ProjectServices,
+} = require("../../associations/ProjectAssociations");
 
 //-----------PROJECT CONTROLLERS-----------//
 
@@ -15,6 +19,13 @@ exports.createProject = async (req, res) => {
       ...Payload,
     });
     if (createdProject) {
+      const projectDetail = await ProjectDetails.create({
+        ProjectId: createdProject.id,
+      });
+      await ProjectServices.create({
+        ProjectDetailId:projectDetail.id,
+        ServiceId:req.query.data.service,
+      });
       return res
         .status(200)
         .json({ status: "success", message: "project-created" });
@@ -49,12 +60,14 @@ exports.deleteProject = async (req, res) => {
 };
 
 exports.getProjectsByUserId = async (req, res) => {
-
   try {
     const userId = req.query.userId;
     const projects = await db.Projects.findAll({
       where: { UserId: userId },
-      order: [['createdAt', 'ASC']],
+      order: [["createdAt", "ASC"]],
+      include: [
+        { model: db.ProjectDetails, include: [{ model: db.ProjectServices }] },
+      ],
     });
     return res.status(200).json({ status: "success", projects });
   } catch (error) {
@@ -64,13 +77,12 @@ exports.getProjectsByUserId = async (req, res) => {
 };
 
 exports.getProjectsByStatus = async (req, res) => {
-
   try {
     const status = req.query.status;
     const userId = req.query.userId;
     const projects = await db.Projects.findAll({
-      where: { status: status, UserId:userId },
-      order: [['createdAt', 'ASC']],
+      where: { status: status, UserId: userId },
+      order: [["createdAt", "ASC"]],
     });
 
     return res.status(200).json({ status: "success", projects });
