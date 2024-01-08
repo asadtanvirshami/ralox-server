@@ -12,7 +12,7 @@ const app = express();
 
 // Importing route modules
 const authRoutes = require('./routes/auth/');
-const managerRoutes = require('./routes/managers/');
+const projectsRoutes = require('./routes/projects/index');
 
 // Middleware setup
 app.use(morgan('tiny')); // Logging middleware for request details
@@ -31,7 +31,7 @@ app.get("/", (req, res) => {res.json('Algorim Server');});
 
 // Setting up modular routes for different features
 app.use("/auth", authRoutes);
-app.use("/manager", managerRoutes);
+app.use("/project", projectsRoutes);
 
 // Configuring the server to listen on a specific port
 const PORT = process.env.PORT || 8080;

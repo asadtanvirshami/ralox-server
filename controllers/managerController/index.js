@@ -1,23 +1,23 @@
-const Sequelize = require("sequelize");
-const jwt = require("jsonwebtoken");
+// const Sequelize = require("sequelize");
+// const jwt = require("jsonwebtoken");
 
-const {Users, Projects, Services, Managers} = require("../../associations/ProjectAssociations/index")
+// const {Users, Projects, Services, Managers} = require("../../associations/ProjectAssociations/index")
 
-const Op = Sequelize.Op;
+// const Op = Sequelize.Op;
 
-exports.getProject = (req, res) => {
+// exports.getProject = (req, res) => {
     
-};
+// };
 
-exports.createProject = (req, res) => {
+// exports.createProject = (req, res) => {
 
-};
+// };
 
-exports.updateProject = (req, res) => {
+// exports.updateProject = (req, res) => {
   
-};
+// };
 
-exports.deleteProject = (req, res) => {
+// exports.deleteProject = (req, res) => {
   
-};
+// };
 

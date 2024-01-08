@@ -2,11 +2,8 @@ const Sequelize = require("sequelize");
 const jwt = require("jsonwebtoken");
 
 const db = require("../../models");
-const Users = require("../../models/Users");
 
-const Op = Sequelize.Op;
-
-//Login for User
+//Login API
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -21,12 +18,12 @@ exports.login = async (req, res) => {
       if (userInfo.email == email && userInfo.password) {
         const payload = {
           // Payload to send and cache on the client-side
-          fname:`${userInfo.fname}`,
-          lname:` ${userInfo.lname}`,
+          fname: `${userInfo.fname}`,
+          lname: ` ${userInfo.lname}`,
           username: `${userInfo.fname} ${userInfo.lname}`,
           loginId: `${userInfo.id}`,
           email: userInfo.email,
-          isAuthorized:true
+          isAuthorized: true,
         };
         jwt.sign(
           // JWT token with expiration time and payload
@@ -59,7 +56,7 @@ exports.login = async (req, res) => {
   }
 };
 
-//Signup for User
+//Signup API
 exports.signup = async (req, res) => {
   const { email } = req.body;
   console.log(email);

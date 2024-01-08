@@ -3,6 +3,9 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
     },
+    boostPrice: {
+      type: DataTypes.FLOAT,
+    },
   });
   return Services;
 };

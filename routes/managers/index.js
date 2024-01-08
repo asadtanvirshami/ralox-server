@@ -1,16 +1,16 @@
-const routes = require('express').Router();
-const managerController = require("../../controllers/managerController/index");
+// const routes = require('express').Router();
+// const managerController = require("../../controllers/managerController/index");
 
-// Dashboard User Login
-routes.get("/create", managerController.createProject);
+// // Manager CREATE API
+// routes.post("/create", managerController.createProject);
 
-// Dashboard User Signin
-routes.get("/get", managerController.getProject);
+// // Manager GET API
+// // routes.get("/get", managerController.createProject);
 
-// Dashboard User Signin
-routes.get("/update", managerController.updateProject);
+// // Manager UPDATE API
+// routes.post("/update", managerController.updateProject);
 
-// Dashboard User Signin
-routes.get("/delete", managerController.deleteProject);
+// // Manager DELETE API
+// routes.delete("/delete", managerController.deleteManager);
 
-module.exports = routes;
+// module.exports = routes;
