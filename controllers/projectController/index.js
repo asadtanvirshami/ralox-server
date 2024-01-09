@@ -10,6 +10,7 @@ const {
 
 exports.createProject = async (req, res) => {
   const project_code = Math.floor(100 + Math.random() * 9000);
+  console.log(req.body.data);
   try {
     const Payload = {
       ...req.body.data,
@@ -24,11 +25,11 @@ exports.createProject = async (req, res) => {
       });
       await ProjectServices.create({
         ProjectDetailId:projectDetail.id,
-        ServiceId:req.query.data.service,
+        ServiceId:req.body.data.service
       });
       return res
         .status(200)
-        .json({ status: "success", message: "project-created" });
+        .json({ status: "success", message: "project-created", payload:createdProject});
     }
   } catch (error) {
     console.error("Error creating project:", error);
@@ -47,9 +48,14 @@ exports.deleteProject = async (req, res) => {
         id: projectId,
       },
     });
+    const deleteProjectDetails = await db.ProjectDetails.destroy({
+      where: {
+        ProjectId: projectId,
+      },
+    })
 
-    if (deletedCount === 1) {
-      return res.status(200).json({ message: "Project deleted successfully" });
+    if (deletedCount === 1 && deleteProjectDetails === 1) {
+      return res.status(200).json({ message: "project-deleted" });
     } else {
       return res.status(404).json({ error: "Project not found" });
     }
@@ -66,7 +72,7 @@ exports.getProjectsByUserId = async (req, res) => {
       where: { UserId: userId },
       order: [["createdAt", "ASC"]],
       include: [
-        { model: db.ProjectDetails, include: [{ model: db.ProjectServices }] },
+        { model: db.ProjectDetails, include: [{ model: db.ProjectServices, include:[{model:db.Services}] }] },
       ],
     });
     return res.status(200).json({ status: "success", projects });

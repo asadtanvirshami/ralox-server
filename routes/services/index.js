@@ -5,7 +5,7 @@ const serviceController = require("../../controllers/serviceController/");
 routes.post("/create", serviceController.createServices );
 
 // Service GET API
-routes.post("/get", serviceController.getServices );
+routes.get("/get", serviceController.getServices );
 
 
 module.exports = routes;

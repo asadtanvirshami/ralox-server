@@ -96,13 +96,13 @@ ProjectDetails.hasMany(ProjectDocuments, {
 });
 ProjectDocuments.belongsTo(ProjectDetails);
 
-//ProjectDocuments <---> Attachments
-ProjectDocuments.hasMany(Attachments, {
-  foriegnKey: {
-    type: DataTypes.INTEGER,
-  },
-});
-Attachments.belongsTo(ProjectDocuments);
+// //ProjectDocuments <---> Attachments
+// ProjectDocuments.hasMany(Attachments, {
+//   foriegnKey: {
+//     type: DataTypes.INTEGER,
+//   },
+// });
+// Attachments.belongsTo(ProjectDocuments);
 
 //ProjectDetails <---> ProjectServices
 ProjectDetails.hasMany(ProjectServices, {

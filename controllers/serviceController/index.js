@@ -28,7 +28,7 @@ exports.deleteServices = (req, res) => {};
 exports.getServices = async (req, res) => {
   try {
     const service = await db.Services.findAll();
-    return res.status(200).json({ status: "success", service });
+    return res.status(200).json({ status: "success", payload:service });
   } catch (error) {
     console.error("Error fetching projects by user ID:", error);
     return res.status(500).json({ error: "Internal Server Error" });
