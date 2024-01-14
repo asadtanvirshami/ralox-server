@@ -24,12 +24,16 @@ exports.createProject = async (req, res) => {
         ProjectId: createdProject.id,
       });
       await ProjectServices.create({
-        ProjectDetailId:projectDetail.id,
-        ServiceId:req.body.data.service
+        ProjectDetailId: projectDetail.id,
+        ServiceId: req.body.data.service,
       });
       return res
         .status(200)
-        .json({ status: "success", message: "project-created", payload:createdProject});
+        .json({
+          status: "success",
+          message: "project-created",
+          payload: createdProject,
+        });
     }
   } catch (error) {
     console.error("Error creating project:", error);
@@ -52,7 +56,7 @@ exports.deleteProject = async (req, res) => {
       where: {
         ProjectId: projectId,
       },
-    })
+    });
 
     if (deletedCount === 1 && deleteProjectDetails === 1) {
       return res.status(200).json({ message: "project-deleted" });
@@ -72,7 +76,12 @@ exports.getProjectsByUserId = async (req, res) => {
       where: { UserId: userId },
       order: [["createdAt", "ASC"]],
       include: [
-        { model: db.ProjectDetails, include: [{ model: db.ProjectServices, include:[{model:db.Services}] }] },
+        {
+          model: db.ProjectDetails,
+          include: [
+            { model: db.ProjectServices, include: [{ model: db.Services }] },
+          ],
+        },
       ],
     });
     return res.status(200).json({ status: "success", projects });
@@ -115,18 +124,42 @@ exports.getProjectById = async (req, res) => {
   }
 };
 
+exports.getProjectIDs = async (req, res) => {
+  try {
+    const project = await db.Projects.findAll();
+
+    if (project) {
+      return res.status(200).json(project);
+    } else {
+      return res.status(404).json({ error: "Project not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching project by ID:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 //-----------PROJECT WITH PROJECT DETAILS CONTROLLERS-----------//
 
 exports.getProjectDetailByProjectId = async (req, res) => {
+  console.log('====================================');
+  console.log(req.body);
+  console.log('====================================');
   try {
-    const projectId = req.query.projectId;
-    const projects = await ProjectDetails.findAll({
-      where: { ProjectId: projectId },
+    const projectId = req.params.id;
+    const projects = await Projects.findAll({
+      where: { id: projectId },
       order: [["createdAt", "ASC"]],
       include: [
-        { model: ProjectServices },
-        { model: Milestones },
-        { model: ProjectDocuments },
+        {
+          model: db.ProjectDetails,
+          include: [
+            { model: db.ProjectServices, include: [{ model: db.Services }] },
+            { model: db.ProjectDocuments},
+          ],
+        },
+        { model: db.Payments },
+        { model: db.Milestones },
       ],
     });
     return res.status(200).json({ status: "success", projects });

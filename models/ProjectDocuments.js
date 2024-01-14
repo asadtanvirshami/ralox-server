@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       files: {
         type: DataTypes.JSON,
       },
+      imgs: {
+        type: DataTypes.JSON,
+      },
       
     });
   
