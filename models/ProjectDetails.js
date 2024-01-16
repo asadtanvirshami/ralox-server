@@ -1,12 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
     const ProjectDetails = sequelize.define("ProjectDetails", {
       active: {
-        type: DataTypes.STRING,
-        defaultValue: "1",
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
       approved: {
-        type: DataTypes.STRING,
-        defaultValue: "0",
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      boosted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       paymentType: {
         type: DataTypes.STRING,
@@ -16,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       endDate: {
         type: DataTypes.STRING,
+        defaultValue: "Not-ended",
       },
       manager: {
         type: DataTypes.STRING,
@@ -23,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       managerNo: {
         type: DataTypes.STRING,
-        defaultValue: "-",
+        defaultValue: "No-number",
       },
       progress: {
         type: DataTypes.STRING,

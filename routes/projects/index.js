@@ -1,8 +1,17 @@
 const routes = require("express").Router();
 const projectController = require("../../controllers/projectController/index");
 
+// Project GET API
+routes.get("/getAllProjects", projectController.getAllProjects);
+
 // Project CREATE API
 routes.post("/create", projectController.createProject);
+
+// Project UPDATE API
+routes.post("/update", projectController.update);
+
+// Project GET BY STATUS API
+routes.get("/getByStatusById", projectController.getProjectsByStatusId);
 
 // Project GET BY STATUS API
 routes.get("/getByStatus", projectController.getProjectsByStatus);
@@ -12,9 +21,6 @@ routes.get("/getByUserId", projectController.getProjectsByUserId);
 
 // Project GET BY PROJECT ID API
 routes.get("/getById", projectController.getProjectById);
-
-// Project UPDATE API
-routes.put("/update", projectController.updateProject);
 
 // Project DELETE API
 routes.delete("/delete", projectController.deleteProject);
