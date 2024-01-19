@@ -74,6 +74,30 @@ exports.getAllProjects = async (req, res) => {
   }
 };
 
+exports.getProjectsByCode = async (req, res) => {
+  try {
+    const codeQuery = req.query.code;
+    const projects = await db.Projects.findAll({
+      order: [["createdAt", "ASC"]],
+      include: [
+        {
+          model: db.ProjectDetails,
+          where: { code: `${codeQuery}` },
+          include: [
+            { model: db.ProjectServices, include: [{ model: db.Services }] },
+          ],
+        },
+        { model: db.Payments },
+        { model: db.Milestones },
+      ],
+    });
+    return res.status(200).json({ status: "success", projects });
+  } catch (error) {
+    console.error("Error fetching projects by user ID:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 exports.update = (req, res) => {
   try {
     const updatedProjectDetail = db.ProjectDetails.upsert({

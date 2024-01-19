@@ -7,6 +7,9 @@ routes.get("/getAllProjects", projectController.getAllProjects);
 // Project CREATE API
 routes.post("/create", projectController.createProject);
 
+// Project Search API
+routes.get("/getByCode", projectController.getProjectsByCode);
+
 // Project UPDATE API
 routes.post("/update", projectController.update);
 
