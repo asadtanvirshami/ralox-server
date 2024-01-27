@@ -161,6 +161,7 @@ exports.verifyToken = (req, res) => {
 //----JWT Verification----
 exports.verify = (req, res, next) => {
   //token recieved in the headers and spliting up
+  console.log()
   const token = req.headers["x-access-token"]?.split("Split")[1];
   if (token) {
     //token recieved this condition executes
@@ -178,11 +179,10 @@ exports.verify = (req, res, next) => {
         }
         req.user = {};
         req.user.id = decode.id;
-        req.user.username = decode.username;
         next(); //if token verified run to the JWT Verification Authorization
       }
     );
   } else {
-    res.status(500).json({ status: "error", message: "token-not-verified" });
+    res.json({ status: "error", message: "token-not-verified" });
   }
 };

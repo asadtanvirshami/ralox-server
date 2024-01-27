@@ -1,10 +1,10 @@
 const routes = require('express').Router();
 const authController = require("../../controllers/authController/index");
 
-// Dashboard User Login
+//User Login
 routes.post("/login", authController.login);
 
-// Dashboard User Signin
+//User Signin
 routes.post("/signup", authController.signup);
 
 // Dashboard Admin Signin
@@ -12,5 +12,9 @@ routes.post("/adminLogin", authController.adminLogin);
 
 // Dashboard Admin Signin
 routes.post("/adminSignup", authController.adminSignup);
+
+
+// SessionJWT_VERIFICATION
+routes.get("/verification",  authController.verify, authController.verifyToken);
 
 module.exports = routes;
