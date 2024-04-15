@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: "No-number",
       },
+      slack: {
+        type: DataTypes.STRING,
+        defaultValue: "No-link",
+      },
       progress: {
         type: DataTypes.STRING,
         defaultValue: "0",

@@ -8,7 +8,7 @@ const {
   Milestones,
   Attachments,
   Payments,
-  ProjectDocuments,
+  // ProjectDocuments,
   ProjectServices,
 } = require("../../models");
 
@@ -89,12 +89,12 @@ Projects.hasMany(Milestones, {
 Milestones.belongsTo(Projects);
 
 //ProjectDetails <---> ProjectDocuments
-ProjectDetails.hasMany(ProjectDocuments, {
-  foriegnKey: {
-    type: DataTypes.INTEGER,
-  },
-});
-ProjectDocuments.belongsTo(ProjectDetails);
+// ProjectDetails.hasMany(ProjectDocuments, {
+//   foriegnKey: {
+//     type: DataTypes.INTEGER,
+//   },
+// });
+// ProjectDocuments.belongsTo(ProjectDetails);
 
 // //ProjectDocuments <---> Attachments
 // ProjectDocuments.hasMany(Attachments, {
@@ -121,6 +121,6 @@ module.exports = {
   Milestones,
   Attachments,
   Payments,
-  ProjectDocuments,
+  // ProjectDocuments,
   ProjectServices,
 };

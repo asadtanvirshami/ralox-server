@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize");
+const nodemailer = require("nodemailer");
 const db = require("../../models");
 const {
   Projects,
@@ -34,11 +35,69 @@ exports.createProject = async (req, res) => {
         ...projectDetailBody,
         ProjectId: createdProject.id,
       });
-      await ProjectServices.create({
-        ...req.body.data,
-        ServiceId: req.body.data.service,
-        ProjectDetailId: projectDetail.id,
+      if (
+        Array.isArray(req.body.data.service) &&
+        req.body.data.service.length > 0
+      ) {
+        await req.body.data.service.forEach(async (x) => {
+          // Make sure to use async function to await inside forEach
+          const serviceIds = x.split(",").map((id) => id.trim()); // Split and parse the string
+          for (const serviceId of serviceIds) {
+            await ProjectServices.create({
+              ProjectDetailId: projectDetail.id,
+              ServiceId: serviceId,
+            });
+          }
+        });
+      }
+
+      let transporter = nodemailer.createTransport({
+        host: "smtp-relay.sendinblue.com",
+        // host: "smtp-relay.brevo.com",
+        port: 587,
+        secure: false,
+        auth: {
+          user: "raloxsoft@gmail.com",
+          pass: "1YA8BmcNtsO2fbXa",
+        },
       });
+      await transporter.sendMail({
+        from: `"Algorim Team" <algorimsoftware@outlook.com>`,
+        to: `${req.body.data.email}`,
+        subject: `Confirmation: Receipt of Your Project Submission`,
+        html: `<p>Dear Esteemed Customer,</p>
+          <p>We are pleased to inform you that we have received your project submission successfully. Your project has been assigned the code <strong>${project_code}</strong>. Our dedicated team will meticulously review the provided details.</p>
+          <p>Below is a summary of the project details:</p>
+          <table style="border-collapse: collapse; width: 100%;">
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Title</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${projectBody.title}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Deadline</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${projectBody.deadline}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Budget</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${projectBody.budget}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Description</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${projectBody.description}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">code</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${project_code}</td>
+            </tr>
+          </table>
+          <p>Rest assured, we will keep you updated on the progress of the review process. Your satisfaction is our utmost priority.</p>
+          <p>Thank you for selecting Algorim. We eagerly anticipate the opportunity to collaborate with you!</p>
+          <p>Best Regards,</p>
+          <p>The Algorim Team</p>`,
+      });
+
+      // console.log("Message sent: %s", info.messageId);
+      // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
       return res.status(200).json({
         status: "success",
         message: "project-created",
@@ -60,7 +119,7 @@ exports.getAllProjects = async (req, res) => {
           model: db.ProjectDetails,
           include: [
             { model: db.ProjectServices, include: [{ model: db.Services }] },
-            { model: db.ProjectDocuments },
+            // { model: db.ProjectDocuments },
           ],
         },
         { model: db.Payments },
@@ -140,27 +199,41 @@ exports.deleteProject = async (req, res) => {
   }
 };
 
-exports.getProjectsByUserId = async (req, res) => {
-  try {
-    const userId = req.query.userId;
-    const projects = await db.Projects.findAll({
-      where: { UserId: userId },
-      order: [["createdAt", "ASC"]],
-      include: [
-        {
-          model: db.ProjectDetails,
-          include: [
-            { model: db.ProjectServices, include: [{ model: db.Services }] },
-          ],
-        },
-      ],
-    });
-    return res.status(200).json({ status: "success", projects });
-  } catch (error) {
-    console.error("Error fetching projects by user ID:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+// exports.getProjectsByUserId = async (req, res) => {
+//   try {
+//     const { page, pageSize } = req.query;
+//     const offset = (page - 1) * pageSize;
+
+//     const totalCount = await db.Projects.count();
+
+//     const projects = await db.Projects.findAll({
+//       order: [["createdAt", "ASC"]],
+//       include: [
+//         {
+//           model: db.ProjectDetails,
+//           include: [
+//             { model: db.ProjectServices, include: [{ model: db.Services }] },
+//           ],
+//         },
+//         { model: db.Payments },
+//         { model: db.Milestones },
+//       ],
+//       offset,
+//       limit: pageSize,
+//     });
+
+//     return res.status(200).json({
+//       status: "success",
+//       projects,
+//       currentPage: parseInt(page),
+//       pageSize: parseInt(pageSize),
+//       totalCount,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching projects:", error);
+//     return res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
 
 exports.getProjectsByStatus = async (req, res) => {
   try {
@@ -188,28 +261,69 @@ exports.getProjectsByStatus = async (req, res) => {
   }
 };
 
-exports.getProjectsByStatusId = async (req, res) => {
+exports.getProjectsByUserId = async (req, res) => {
   try {
-    const status = req.query.status;
+    const status = req.query.status || "";
     const userId = req.query.userId;
+    const page = parseInt(req.query.page) || 0; // Default to page 1 if not provided
+    const pageSize = parseInt(req.query.pageSize) || 10; // Default to 10 items per page if not provided
 
-    const projects = await db.Projects.findAll({
-      where: { UserId: userId },
-      order: [["createdAt", "ASC"]],
-      include: [
-        {
-          model: db.ProjectDetails,
-          where: {
-            status: status,
+    const zeroBasedPage = Math.max(0, page - 1);
+    const offset = zeroBasedPage * pageSize;
+
+    let totalCount;
+    let projects;
+
+    if (status !== "") {
+      // If status is provided, filter projects based on status
+      totalCount = await db.Projects.count({
+        where: { UserId: userId },
+        include: [
+          {
+            model: db.ProjectDetails,
+            where: { status: status },
           },
-          include: [
-            { model: db.ProjectServices, include: [{ model: db.Services }] },
-          ],
-        },
-      ],
-    });
+        ],
+      });
 
-    res.status(200).json({ projects });
+      projects = await db.Projects.findAll({
+        where: { UserId: userId },
+        order: [["createdAt", "ASC"]],
+        include: [
+          {
+            model: db.ProjectDetails,
+            where: { status: status },
+            include: [{ model: db.ProjectServices, include: [db.Services] }],
+          },
+        ],
+        offset,
+        limit: pageSize,
+      });
+    } else {
+      // If status is not provided, fetch all projects
+      totalCount = await db.Projects.count({ where: { UserId: userId } });
+
+      projects = await db.Projects.findAll({
+        where: { UserId: userId },
+        order: [["createdAt", "ASC"]],
+        include: [
+          {
+            model: db.ProjectDetails,
+            include: [{ model: db.ProjectServices, include: [db.Services] }],
+          },
+        ],
+        offset,
+        limit: pageSize,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      projects,
+      currentPage: parseInt(page),
+      pageSize: parseInt(pageSize),
+      totalCount,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -264,7 +378,7 @@ exports.getProjectDetailByProjectId = async (req, res) => {
           model: db.ProjectDetails,
           include: [
             { model: db.ProjectServices, include: [{ model: db.Services }] },
-            { model: db.ProjectDocuments },
+            // { model: db.ProjectDocuments },
           ],
         },
         { model: db.Payments },

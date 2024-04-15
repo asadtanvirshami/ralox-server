@@ -17,6 +17,7 @@ const authRoutes = require("./routes/auth/");
 const projectsRoutes = require("./routes/projects/");
 const servicesRoutes = require("./routes/services/");
 const reviewsRoutes = require("./routes/reviews/");
+const userRoutes = require("./routes/users/");
 const server = http.createServer(app);
 
 // Middleware setup
@@ -41,37 +42,7 @@ app.use("/auth", authRoutes);
 app.use("/project", projectsRoutes);
 app.use("/service", servicesRoutes);
 app.use("/review", reviewsRoutes);
-
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
-
-  socket.on("join_room", (data) => {
-    socket.join(data);
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
-  });
-
-  socket.on("send_message", (data, room) => {
-    if (room === "") {
-      socket.broadcast.emit("receive_message", data);
-    } else {
-      socket.to(room).emit("receive_message", data);
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User Disconnected", socket.id);
-  });
-});
-server.listen(3001, () => {
-  console.log("running");
-});
+app.use("/user", userRoutes);
 
 // Configuring the server to listen on a specific port
 const PORT = process.env.PORT || 8080;

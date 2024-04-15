@@ -14,7 +14,7 @@ routes.get("/getByCode", projectController.getProjectsByCode);
 routes.post("/update", projectController.update);
 
 // Project GET BY STATUS API
-routes.get("/getByStatusById", projectController.getProjectsByStatusId);
+// routes.get("/getByStatusById", projectController.getProjectsByStatusId);
 
 // Project GET BY STATUS API
 routes.get("/getByStatus", projectController.getProjectsByStatus);
