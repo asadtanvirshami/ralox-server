@@ -362,7 +362,7 @@ exports.getProjectIDs = async (req, res) => {
   }
 };
 
-//-----------PROJECT WITH PROJECT DETAILS CONTROLLERS-----------//
+//-----------PROJECT WITH PROJECT DETAILS CONTROLLERS-----------///
 
 exports.getProjectDetailByProjectId = async (req, res) => {
   console.log("====================================");
