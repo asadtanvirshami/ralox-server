@@ -199,42 +199,6 @@ exports.deleteProject = async (req, res) => {
   }
 };
 
-// exports.getProjectsByUserId = async (req, res) => {
-//   try {
-//     const { page, pageSize } = req.query;
-//     const offset = (page - 1) * pageSize;
-
-//     const totalCount = await db.Projects.count();
-
-//     const projects = await db.Projects.findAll({
-//       order: [["createdAt", "ASC"]],
-//       include: [
-//         {
-//           model: db.ProjectDetails,
-//           include: [
-//             { model: db.ProjectServices, include: [{ model: db.Services }] },
-//           ],
-//         },
-//         { model: db.Payments },
-//         { model: db.Milestones },
-//       ],
-//       offset,
-//       limit: pageSize,
-//     });
-
-//     return res.status(200).json({
-//       status: "success",
-//       projects,
-//       currentPage: parseInt(page),
-//       pageSize: parseInt(pageSize),
-//       totalCount,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching projects:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
 exports.getProjectsByStatus = async (req, res) => {
   try {
     const status = req.query.status;
@@ -365,9 +329,6 @@ exports.getProjectIDs = async (req, res) => {
 //-----------PROJECT WITH PROJECT DETAILS CONTROLLERS-----------///
 
 exports.getProjectDetailByProjectId = async (req, res) => {
-  console.log("====================================");
-  console.log(req.body);
-  console.log("====================================");
   try {
     const projectId = req.params.id;
     const projects = await Projects.findAll({
