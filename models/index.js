@@ -11,7 +11,8 @@ const db = {};
 
 let sequelize;
 
-const connectionString = "postgresql://algorimsoftware:4Bi5g88B9Zx4exEL_J4ZOQ@sparse-mummy-7987.8nk.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full"
+// const connectionString = "postgres://postgres.casjypnfqwpjomgtqvfb:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+const connectionString = "postgresql://algorimsoftware:DVtNRJtautVzt_yXnV61_A@sparse-mummy-7987.8nk.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full"
 sequelize = new Sequelize(connectionString, {
   dialectOptions: {
     application_name: "docs_simplecrud_node-sequelize",

@@ -15,7 +15,8 @@ const sendEmailService = async (link, email) => {
     from: `"Algorim Team" <algorimsoftware@outlook.com>`,
     to: `${email}`,
     subject: `Reset Password: Your verification email.`,
-    html: ` <p>Dear Esteemed Customer,</p>
+    html: ` <p>Dear 
+    Esteemed Customer,</p>
       <p>We are pleased to inform you that a password reset request has been initiated for your account.</p>
       <p>To reset your password, please click on the following link:</p>
       <p><a href="${link}">Click here to verify.</a></p>
